@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket</title>
+</head>
+<body>
+<div class="container">
+    <h1>Socket.io..</h1>
+    <hr>
+    <div ng-controller="myCtrl">
+        <input type="text" ng-model="name">
+        <button ng-click="click()">Send</button>
+        <hr>
+        <ul class="list-group" ng-repeat="name in names">
+            <li class="list-group-item">{{name}}</li>
+        </ul>
+
+    </div>
+</div>
+    <!-- Scripts-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+
+
+    <script>
+        var socket = io();
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+
+            $scope.name = "";
+            $scope.names = ["rahul"];
+
+            $scope.click = function () {
+                console.log($scope.name);
+                console.log("sending to server.....");
+                console.log("check server.....");
+
+                socket.emit('name',$scope.name);
+                $scope.name = "";
+            }
+
+
+                socket.on('from-server', function (data) {
+                    $scope.$apply(function () {
+                        console.log(data);
+                        $scope.names.push(data);
+                    });
+                });
+
+                    socket.on('disconnect', function (data) {
+                        $scope.$apply(function () {
+                            console.log(data);
+                            $scope.names.push(data);
+                        });
+                    });
+        });
+
+    </script>
+</body>
+</html>
